@@ -31,7 +31,7 @@ var reset = function() {
     playIcon = 'X';
     totalMoves = 0;
 
-    document.getElementById('status').innerHTML = "It is X's turn!";
+    document.getElementById('status').innerHTML = "It is X's turn! Select a position below:";
 
     //disable new game button
     document.getElementById('resetGame').disabled = true;
@@ -53,11 +53,11 @@ var processMove= (move) => {
     if (currentPlayer === 1) {
         currentPlayer = -1;
         playIcon = "O";
-        document.getElementById('status').innerHTML = "It is O's turn!";
+        document.getElementById('status').innerHTML = "It is O's turn! Select a position below:";
     } else {
         currentPlayer = 1;
         playIcon = "X";
-        document.getElementById('status').innerHTML = "It is X's turn!";
+        document.getElementById('status').innerHTML = "It is X's turn! Select a position below:";
     }
 
     //process the board to check for a winner;
@@ -72,7 +72,7 @@ var processBoard = () => {
         let rowSum = 0;
         for (let j = 0; j < 3; j++) {
             rowSum += board[i][j];
-            checkWin(rowSum);
+            if (checkWin(rowSum)) return;
         }
     }
 
@@ -80,15 +80,14 @@ var processBoard = () => {
         let colSum = 0;
         for (let j = 0; j < 3; j++) {
             colSum += board[j][i];
-            checkWin(colSum);
+            if (checkWin(colSum)) return;
         }
     }
 
     let diag1 = board[0][0] + board[1][1] + board[2][2];
-    checkWin(diag1);
+    if (checkWin(diag1)) return;
     let diag2 = board[0][2] + board[1][1] + board[2][0];
-    checkWin(diag2);
-    console.log(`totalMoves = ${totalMoves}`);
+    if (checkWin(diag2)) return;
 
     if (totalMoves === 9) {
         checkWin(null);
@@ -96,9 +95,18 @@ var processBoard = () => {
 }
 
 var checkWin = (val) => {
-    if (val === 3) lockOutBoard('X');
-    else if (val === -3) lockOutBoard('O');
-    else if (val === null) lockOutBoard(null);
+    if (val === 3) {
+        lockOutBoard('X');
+        return true;
+    }
+    else if (val === -3) {
+        lockOutBoard('O');
+        return true;
+    }
+    else if (val === null) {
+        lockOutBoard(null);
+        return true;
+    }
 }
 
 var lockOutBoard = (winner) => {
@@ -113,6 +121,8 @@ var lockOutBoard = (winner) => {
         resultText = "X has won!"
         score.x++;
     }
+
+    document.getElementById('score').innerHTML = `X has won ${score.x} and O has won ${score.o}`;
 
     document.getElementById('status').innerHTML = resultText;
     //allow user to reset:
