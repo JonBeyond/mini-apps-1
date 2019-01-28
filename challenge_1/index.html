@@ -1,12 +1,13 @@
 <html>
 <head>
     <title>Tic-tac-toe</title>
-    <script src='./app.js'></script>
     <!-- use in-line css to create a grid -->
     <style>
         .wrapper {
             display: grid;
+            margin-left: 50px;
             grid-template-columns: 25px 25px;
+            grid-template-rows: 25px 25px;
             grid-gap: 30px;
             }
         .zero {
@@ -51,19 +52,27 @@
 <div class="status">Welcome to tic tac toe!</div>
 <br>
 <div class='currentPlayer'>Player X's turn</div>
-<br>
+<div class='instructor'>Choose your move and hit the checkbox:</div>
+<br><br>
 <!-- grid defined below.-->
 <div class='wrapper'>
-    <div class='zero'>0</div>
-    <div class='one'>1</div>
-    <div class='two'>2</div>
-    <div class='three'>3</div>
-    <div class='four'>4</div>
-    <div class='five'>5</div>
-    <div class='six'>6</div>
-    <div class='seven'>7</div>
-    <div class='either'>8</div>
+    <div class='zero'><input type='checkbox' id='zero'></div>
+    <div class='one'><input type='checkbox' id='one'></div>
+    <div class='two'><input type='checkbox' id='two'></div>
+    <div class='three'><input type='checkbox' id='three'></div>
+    <div class='four'><input type='checkbox' id='four'></div>
+    <div class='five'><input type='checkbox' id='five'></div>
+    <div class='six'><input type='checkbox' id='six'></div>
+    <div class='seven'><input type='checkbox' id='seven'></div>
+    <div class='either'><input type='checkbox' id='eight'></div>
 </div>
+<br><br><br><br>
+<div>Given up? Start a new game: (TBD)</div>
+<button id="resetGame">New Game</button>
+
+
+
+<script src='./app.js'></script>
 
 </body>
 
