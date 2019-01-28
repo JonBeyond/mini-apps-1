@@ -1,25 +1,17 @@
-//Global variables
-// const inputs = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
-// var board = [];
-// var score = {'x': 0,'o': 0};
-// var currentPlayer = null; //1 or -1
-// var playIcon = null; //x or o
-// var totalMoves = null; //if 9, game is over (tie)
-
-
+/************************ GLOBAL STATE ************************/
 var gameState = {
     inputs: ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'],
     board: [],
     score: {'x': 0,'o': 0},
-    currentPlayer: null,
-    playIcon: null,
+    currentPlayer: 1,
+    playIcon: 'X',
     totalMoves: null,
-    moveId: null
+    moveId: null,
+    prevWinner: null
 }
 
+/******* CONTROLLER (LISTENERS) & GAME INITIALIZATION *******/
 
-
-/****** CONTROLLER (LISTENERS) & GAME INITIALIZATION ******/
 var initialize = function() {
     console.log("initializing app");
     reset();
@@ -35,17 +27,29 @@ var initialize = function() {
     document.getElementById('resetGame').addEventListener("click", () => {reset();});
 }
 
+/************************ BOARD RESET ************************/
+
 var reset = function() {
     console.log("initializing new board");
-
-    //reset game state:
     gameState.board = [['','',''],['','',''],['','','']];
-    gameState.currentPlayer = 1;
-    gameState.playIcon = 'X';
+
+
+    let nextStarter = '';
+    if (gameState.playIcon === 'O' || gameState.playIcon === null) {
+        gameState.currentPlayer = 1;
+        gameState.playIcon = 'X';
+        nextStarter = "It is X's turn! Select a position below:";
+    } else {
+        gameState.currentPlayer = -1;
+        gameState.playIcon = 'O';
+        nextStarter = "It is O's turn! Select a position below:";
+    }
+
+
     gameState.totalMoves = 0;
 
     //reset HTML
-    document.getElementById('status').innerHTML = "It is X's turn! Select a position below:";
+    document.getElementById('status').innerHTML = nextStarter;
     document.getElementById('resetGame').disabled = true;
     gameState.inputs.forEach((move) => {
         document.getElementById(move).style.display = 'block';
@@ -82,7 +86,10 @@ var processBoard = () => {
         let rowSum = 0;
         for (let j = 0; j < 3; j++) {
             rowSum += gameState.board[i][j];
-            if (checkWin(rowSum)) return;
+            if (checkWin(rowSum)) {
+                //color these red?
+                return;
+            }
         }
     }
 
@@ -95,8 +102,9 @@ var processBoard = () => {
     }
 
     let diag1 = gameState.board[0][0] + gameState.board[1][1] + gameState.board[2][2];
-    if (checkWin(diag1)) return;
     let diag2 = gameState.board[0][2] + gameState.board[1][1] + gameState.board[2][0];
+
+    if (checkWin(diag1)) return;
     if (checkWin(diag2)) return;
 
     if (gameState.totalMoves === 9) {
@@ -123,12 +131,14 @@ var lockOutBoard = (winner) => {
     //set the winner text
     let resultText = null;
     if (winner === null) {
-        resultText = "The game was a tie!"
+        resultText = "The game was a tie! Try again!";
     } else if (winner === 'O') {
-        resultText = "O has won!"
+        resultText = "O has won! X will start first next game.";
+        gameState.prevWinner = 'O';
         gameState.score.o++;
     } else if (winner === 'X') {
-        resultText = "X has won!"
+        resultText = "X has won! O will start first next game.";
+        gameState.prevWinner = 'X';
         gameState.score.x++;
     }
 
@@ -141,7 +151,7 @@ var lockOutBoard = (winner) => {
     //lock out all remaining buttons
     gameState.inputs.forEach((move) => {
         document.getElementById(move).style.display = "none";
-    })
+    });
 
 }
 

@@ -1,55 +1,11 @@
 <html>
 <head>
-    <title>Tic-tac-toe</title>
+    <title>Mini Tic-Tac-Toe</title>
     <!-- use in-line css to create a grid -->
-    <style>
-        .wrapper {
-            display: grid;
-            margin-left: 50px;
-            grid-template-columns: 25px 25px;
-            grid-template-rows: 25px 25px;
-            grid-gap: 30px;
-            }
-        .zero {
-            grid-column: 1/3;
-            grid-row: 1/3;
-        }
-        .one {
-            grid-column: 2/3;
-            grid-row: 1/3;
-        }
-        .two {
-            grid-column: 3/3;
-            grid-row: 1/3;
-        }
-        .three {
-            grid-column: 1/3;
-            grid-row: 2/3;
-        }
-        .four {
-            grid-column: 2/3;
-            grid-row: 2/3;
-        }
-        .five {
-            grid-column: 3/3;
-            grid-row: 2/3;
-        }
-        .six {
-            grid-column: 1/3;
-            grid-row: 3/3;
-        }
-        .seven {
-            grid-column: 2/3;
-            grid-row: 3/3;
-        }
-        .eight {
-            grid-column: 3/3;
-            grid-row: 3/3;
-        }
-    </style>
+    <link rel='stylesheet' type='text/css' href='style.css'>
 </head>
 <body>
-<div class="welcome">Welcome to Tic Tac Toe!</div>
+<div class='welcome'>Welcome to mini Tic-Tac-Toe!</div>
 <br>
 <div id='status'>It is X's turn!</div>
 <br><br>
@@ -67,13 +23,10 @@
     <div class='either'><input type='checkbox' id='eight'><div id='eightplay'></div></div>
 </div>
 <br><br><br>
-<div id="score">Scoreboard: complete a game to start tracking!</div><br>
+<div id='score'>Scoreboard: complete a game to start tracking!</div><br>
 <div>Finished? Start a new game:</div>
-<button id="resetGame">New Game</button>
+<button id='resetGame'>New Game</button>
 <!-- the script must be loaded last in order to detect all the DOM elements -->
 <script src='./app.js'></script>
-
 </body>
-
 </html>
-
