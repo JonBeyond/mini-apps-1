@@ -32,13 +32,10 @@ var initialize = function() {
 
 /****** STATE UPDATER (THE GAME BOARD) ******/
 var processMove= (move) => {
-    //console.log(`Processing move for ${currentPlayer} at position ${move}`);
-    //console.log(`Target: [${~~(move/3)}, ${move%3}]`);
-
-    //set move:
+    //set this move
     board[~~(move/3)][move%3] = currentPlayer;
 
-    //switch player
+    //switch players
     if (currentPlayer === 1) {
         currentPlayer = -1;
         playIcon = "O";
@@ -47,22 +44,44 @@ var processMove= (move) => {
         playIcon = "X";
     }
 
-    //check for victor;
-    //if so, disable all buttons and wait for new game
-    console.log(`board is now: ${JSON.stringify(board)})`);
+    //process the board to check for a winner;
     processBoard();
 }
 
 var processBoard = () => {
     //check for a win
+    //if the sum of any given row, column, or diagnal is 3, then X wins, if it is -3, then O wins.
 
+    for (let i = 0; i < 3; i++) {
+        let rowSum = 0;
+        for (let j = 0; j < 3; j++) {
+            rowSum += board[i][j];
+            checkWin(rowSum);
+        }
+    }
+
+    for (let i = 0; i < 3; i++) {
+        let colSum = 0;
+        for (let j = 0; j < 3; j++) {
+            colSum += board[j][i];
+            checkWin(colSum);
+        }
+    }
+
+    let diag1 = board[0][0] + board[1][1] + board[2][2];
+    checkWin(diag1);
+    let diag2 = board[0][2] + board[1][1] + board[2][0];
+    checkWin(diag2);
 }
 
-var displayBoard = (move) => {
-    document.getElementById(move).HTML = 'X';
+var checkWin = (val) => {
+    if (val === 3) {
+        console.log("X has won!");
+    } else if (val === -3) {
+        console.log("Y has won!");
+    }
+
 }
-
-
 
 //LETS GO!
 initialize();
