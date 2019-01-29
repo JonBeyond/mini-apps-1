@@ -1,13 +1,12 @@
 /*************************************************************************************/
 /************************* GLOBAL STATE & STATE MANIPULATION *************************/
 /*************************************************************************************/
-
     var game = {
         targetIDs: ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'],
         board: [],
         score: {'x': 0,'o': 0, 'ties': 0},
         playIcon: 'X',
-        prevWinner: 'X',
+        prevWinner: null,
         wasTie: false,
         complete: false,
         moves: [],
@@ -80,9 +79,8 @@
                 }
             }
             let diag1 = game.board[0][0] + game.board[1][1] + game.board[2][2];
-            let diag2 = game.board[0][2] + game.board[1][1] + game.board[2][0];
-
             if (game.checkWin(diag1)) return;
+            let diag2 = game.board[0][2] + game.board[1][1] + game.board[2][0];
             if (game.checkWin(diag2)) return;
 
             if (game.moves.length === 9) {
@@ -96,13 +94,14 @@
             game.moves = [];
             //swap starter player to the loser
             if (game.prevWinner === 'X') {
-                game.playIcon = "O";
+                game.playIcon = 'O';
             } else {
-                game.playIcon = "X";
+                game.playIcon = 'X';
             }
             DOM.fullUpdate(true); //true forces a full reset of the board.
         }
     }
+
 /*************************************************************************************/
 /********************* CONTROLLER / LISTENERS & GAME INITIALIZATION ******************/
 /*************************************************************************************/
@@ -110,7 +109,7 @@
     var initialize = function() {
         game.resetState();
 
-        document.getElementById('gameBoard').addEventListener("click", (event) => {
+        document.getElementById('gameBoard').addEventListener('click', (event) => {
             let move = event.target.id;
             if (game.isValid(move)) {
                 game.placeMove(move);
@@ -120,16 +119,15 @@
             }
         })
 
-        document.getElementById('resetGame').addEventListener("click", () => {game.resetState();});
+        document.getElementById('resetGame').addEventListener('click', () => {game.resetState();});
     }
 
 /*************************************************************************************/
 /******************************** VIEWER / DOM RENDER ********************************/
 /*************************************************************************************/
 
-
 var DOM = {
-    fullUpdate: (fullReset) => {
+    fullUpdate: (fullReset = false) => {
         if (fullReset) {
             game.targetIDs.forEach((move) => {document.getElementById(move).innerHTML = ''});
             document.getElementById('resetGame').disabled = true;
@@ -155,7 +153,5 @@ var DOM = {
 /*************************************************************************************/
 /*********************************** GAME KICKOFF!! **********************************/
 /*************************************************************************************/
-
-
 //LETS GO!
 initialize();
