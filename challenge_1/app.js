@@ -6,7 +6,6 @@
         score: {'x': 0,'o': 0, 'ties': 0},
         currentPlayer: 1,
         playIcon: 'X',
-        startPlayer: 'X',
         prevWinner: null,
         wasTie: false,
         complete: false,
@@ -19,7 +18,6 @@
 /******* CONTROLLER / LISTENERS & GAME INITIALIZATION *******/
 
     var initialize = function() {
-        console.log("initializing app");
         reset();
 
         document.getElementById('gameBoard').addEventListener("click", (event) => {
@@ -27,10 +25,10 @@
             if (game.isValidMove(move)) {
                 game.moves.push(move); //add the move to prevent duplication
                 document.getElementById(move).innerHTML = game.playIcon; //update the DOM ********* TODO: MOVE THIS OUT
-                placeMove(); //dont need to send the move, we can access it in game.moves.
-                processBoard(); //check for a winner
-                nextPlayer(); //change player
-                updateDOM(); //update DOM
+                placeMove();
+                processBoard();
+                nextPlayer();
+                updateDOM();
             }
         })
 
@@ -49,11 +47,9 @@ var reset = function() {
 
     //swap the start player ************** TODO: this should be done elsewhere
     if (game.prevWinner === 'X') {
-        game.startPlayer = "O";
         game.currentPlayer = -1;
         game.playIcon = "O";
     } else { // TODO: this will create a loop of X players if no one ever wins.  Need to fix this later.
-        game.startPlayer = "X";
         game.currentPlayer = 1;
         game.playIcon = "X";
     }
