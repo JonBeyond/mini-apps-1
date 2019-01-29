@@ -1,30 +1,59 @@
-/*
+var state = {
+    preprocess: null,
+    postprocess: null,
+    readFile: () => {
+        state.preprocess = document.getElementById('inputfile').value;
+        viewer.render();
+    },
+    sendFile: () => {
+        let POST = new XMLHttpRequest(); //vanilla js HTTP transfer
+        POST.open('POST', 'http://127.0.0.1:3000/submit', true);
+        POST.setRequestHeader('Content-type', 'application/json');
+        POST.onreadystatechange = () => {
+            if (POST.readyState === 4 && POST.status === 201) {
+                state.getFile();
+            }
+        }
+        POST.send(JSON.stringify(state.preprocess));
 
-*************** CLIENT REQTS ***************
+    },
+    getFile: () => {
+        let GET = new XMLHttpRequest();
+        GET.open('GET', 'http://127.0.0.1:3000/getfile', true)
+        GET.onreadystatechange = () => {
+            if (GET.readyState === 4 && GET.status === 200) {
+                state.postprocess = GET.responseText;
+                console.log("received: " + state.postprocess);
+            }
+        }
+        GET.send();
+    }
+}
 
-The client app should be able to submit JSON data to the server,
-receive a response containing a CSV-formatted result (the way this
-is done will vary depending on where you are in the challenge).
+
+var viewer = {
+    render: () => {
+        if (state.preprocess) {
+            document.getElementById('preprocess').innerHTML = state.preprocess;
+        }
+    },
+    disableButton: (target) => {
+        document.getElementById(target).disabled = true;
+    }
+}
+var controller = {
+    initialize: () => {
+        document.getElementById('submit').addEventListener('click', (event) => {
+            event.preventDefault();
+            viewer.disableButton(event.target.id);
+            state.readFile();
+            state.sendFile(); //async
+        })
+    }
+}
 
 
-*************** CSV DETAILS ***************
 
-The server must flatten the JSON hierarchy, mapping each item/object in
-the JSON to a single line of CSV report (see included sample output),
-where the keys of the JSON objects will be the columns of the CSV report.
-
-You may assume the JSON data has a regular structure and hierarchy
-(see included sample file). In other words, all sibling records at a
-particular level of the hierarchy will have the same set of properties,
-but child objects might not contain the same properties. In all cases,
-every property you encounter must be present in the final CSV output.
-
-You may also assume that child records in the JSON will always be
-in a property called `children`.
-*/
-
-console.log("app integrated properly");
-
-var state = {}
-var viewer = {}
-var controller = {}
+console.log('app integrated properly');
+console.log('initializing application');
+controller.initialize();
