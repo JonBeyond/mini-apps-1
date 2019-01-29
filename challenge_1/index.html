@@ -11,19 +11,27 @@
 <br><br>
 <!-- grid defined below.-->
 <!-- TODO: it would be nice to figure out a cleaner way to identify each checkbox and div below-->
-<div class='wrapper'>
-    <div class='zero'><input type='checkbox' id='zero'><div id='zeroplay'></div></div>
-    <div class='one'><input type='checkbox' id='one'><div id='oneplay'></div></div>
-    <div class='two'><input type='checkbox' id='two'><div id='twoplay'></div></div>
-    <div class='three'><input type='checkbox' id='three'><div id='threeplay'></div></div>
-    <div class='four'><input type='checkbox' id='four'><div id='fourplay'></div></div>
-    <div class='five'><input type='checkbox' id='five'><div id='fiveplay'></div></div>
-    <div class='six'><input type='checkbox' id='six'><div id='sixplay'></div></div>
-    <div class='seven'><input type='checkbox' id='seven'><div id='sevenplay'></div></div>
-    <div class='either'><input type='checkbox' id='eight'><div id='eightplay'></div></div>
-</div>
+
+<table id="gameBoard">
+    <tr>
+        <td id='zero'></td>
+        <td id='one'></td>
+        <td id='two'></td>
+    </tr>
+    <tr>
+        <td id='three'></td>
+        <td id='four'></td>
+        <td id='five'></td>
+    </tr>
+    <tr>
+        <td id='six'></td>
+        <td id='seven'></td>
+        <td id='eight'></td>
+    </tr>
+</table>
+
 <br><br><br>
-<div id='score'>Scoreboard: complete a game to start tracking!</div><br>
+<div id='score'>Scoreboard: loading</div><br>
 <div>Finished? Start a new game:</div>
 <button id='resetGame'>New Game</button>
 <!-- the script must be loaded last in order to detect all the DOM elements -->
