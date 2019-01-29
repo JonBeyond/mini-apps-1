@@ -6,7 +6,6 @@
         targetIDs: ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'],
         board: [],
         score: {'x': 0,'o': 0, 'ties': 0},
-        currentPlayer: 1,
         playIcon: 'X',
         prevWinner: 'X',
         wasTie: false,
@@ -18,15 +17,21 @@
             DOM.renderMove(move);
             let lastMove = game.moves.slice(-1)[0];
             let moveVal = game.targetIDs.indexOf(lastMove);
-            game.board[~~(moveVal/3)][moveVal%3] = game.currentPlayer;
+
+            let playerVal = null;
+            if (game.playIcon === 'X') {
+                playerVal = 1;
+            } else {
+                playerVal = -1;
+            }
+
+            game.board[~~(moveVal/3)][moveVal%3] = playerVal;
         },
         nextPlayer: () => {
-            if (game.currentPlayer === 1) {
-                game.currentPlayer = -1;
-                game.playIcon = "O";
+            if (game.playIcon === 'X') {
+                game.playIcon = 'O';
             } else {
-                game.currentPlayer = 1;
-                game.playIcon = "X";
+                game.playIcon = 'X';
             }
 
         },
@@ -46,18 +51,16 @@
         },
         processWin: winner => {
             game.moves = game.moves.concat(game.targetIDs);  //prevent further moves
+            game.complete = true;
 
             if (winner === null) {
-                game.complete = true;
                 game.wasTie = true;
                 game.score.ties++;
             } else if (winner === 'O') {
                 game.prevWinner = 'O';
-                game.complete = true;
                 game.score.o++;
             } else if (winner === 'X') {
                 game.prevWinner = 'X';
-                game.complete = true;
                 game.score.x++;
             }
         },
@@ -93,10 +96,8 @@
             game.moves = [];
             //swap starter player to the loser
             if (game.prevWinner === 'X') {
-                game.currentPlayer = -1;
                 game.playIcon = "O";
             } else {
-                game.currentPlayer = 1;
                 game.playIcon = "X";
             }
             DOM.fullUpdate(true); //true forces a full reset of the board.
