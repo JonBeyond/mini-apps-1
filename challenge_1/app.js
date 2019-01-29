@@ -85,6 +85,21 @@
             if (game.moves.length === 9) {
                 game.checkWin(null);
             }
+        },
+        resetState: () => {
+            game.wasTie = false;
+            game.complete = false;
+            game.board = [['','',''],['','',''],['','','']];
+            game.moves = [];
+            //swap starter player to the loser
+            if (game.prevWinner === 'X') {
+                game.currentPlayer = -1;
+                game.playIcon = "O";
+            } else {
+                game.currentPlayer = 1;
+                game.playIcon = "X";
+            }
+            DOM.fullUpdate(true); //true forces a full reset of the board.
         }
     }
 /*************************************************************************************/
@@ -92,11 +107,10 @@
 /*************************************************************************************/
 
     var initialize = function() {
-        resetState();
+        game.resetState();
 
         document.getElementById('gameBoard').addEventListener("click", (event) => {
-            let move = event.path[0].outerHTML.match(/id="\w*/)[0].substring(4);
-
+            let move = event.target.id;
             if (game.isValid(move)) {
                 game.placeMove(move);
                 game.processBoard();
@@ -105,27 +119,7 @@
             }
         })
 
-        document.getElementById('resetGame').addEventListener("click", () => {resetState();});
-    }
-
-/*************************************************************************************/
-/************************************* BOARD RESET ***********************************/
-/*************************************************************************************/
-
-    var resetState = function() {
-        game.wasTie = false;
-        game.complete = false;
-        game.board = [['','',''],['','',''],['','','']];
-        game.moves = [];
-        //swap starter player to the loser
-        if (game.prevWinner === 'X') {
-            game.currentPlayer = -1;
-            game.playIcon = "O";
-        } else {
-            game.currentPlayer = 1;
-            game.playIcon = "X";
-        }
-        DOM.fullUpdate(true); //true forces a full reset of the board.
+        document.getElementById('resetGame').addEventListener("click", () => {game.resetState();});
     }
 
 /*************************************************************************************/
@@ -141,7 +135,7 @@ var DOM = {
         }
 
         let newScoreText = `Current Score (X - O - Ties): ${game.score.x} - ${game.score.o} - ${game.score.ties}`;
-        let newStausText = `It is ${game.playIcon}'s turn! Select a position below:`;
+        let newStatusText = `It is ${game.playIcon}'s turn! Select a position below:`;
         document.getElementById('score').innerHTML = newScoreText;
         document.getElementById('status').innerHTML = newStatusText;
 
