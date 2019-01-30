@@ -6,6 +6,8 @@ Use MongoDB or MySQL to store your user data
 
 const express = require('express');
 const app = express();
+const path = require('path');
+
 
 var server = {
     port: 3000,
@@ -17,7 +19,15 @@ var server = {
 
 var router = {
     serveClient: () => {
-        app.get('/', (req, res) => res.send('client serving not available yet'));
+        app.get('/', (req, res) => {
+            app.use(express.static(`${__dirname}/compiled/client`)); //allow access
+            console.log(`${__dirname}/compiled/client`);
+            res.sendFile(path.join(__dirname, '/public/index.html'), (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            })
+        });
         //two lines, one for serving static assets, one serving the HTML file
     }
 }
