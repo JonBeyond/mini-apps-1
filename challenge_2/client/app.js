@@ -54,6 +54,18 @@ var controller = {
             viewer.disableButton(event.target.id);
             state.readFile();
             state.sendFile(); //async
+        });
+        document.getElementById('fileUpload').addEventListener('click', (event) => {
+            let reader = new FileReader();
+            event.preventDefault();
+            viewer.disableButton(event.target.id);
+            let file = document.getElementById('userFile').files[0];
+            reader.onloadend = (event) => {
+                state.preprocess = JSON.parse(reader.result);
+                viewer.render();
+                state.sendFile();
+            }
+            reader.readAsText(file);
         })
     }
 }
