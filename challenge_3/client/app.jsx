@@ -24,6 +24,9 @@ class App extends React.Component {
             case 2:
                 this.processShipping();
                 break;
+            case 3:
+                this.processBilling();
+                break;
             default:
                 console.log('ERROR: unable to store form data');
         }
@@ -62,7 +65,14 @@ class App extends React.Component {
         console.log(reference);
     }
     processBilling() {
-
+        let reference = this.state.cart.billing;
+        reference.name = document.getElementById('billname').value;
+        reference.cardnumber = document.getElementById('cardnumber').value;
+        reference.expMonth = document.getElementById('expMonth').value;
+        reference.expYear = document.getElementById('expYear').value;
+        reference.CVV = document.getElementById('CVV').value;
+        reference.zip = document.getElementById('zip').value;
+        console.log(reference);
     }
 
 
@@ -122,7 +132,7 @@ class App extends React.Component {
                     <input id='address1' type='text' required size='20'></input>
                     <br></br>
                     Address Line 2:
-                    <input id='address2' type='text' required size='20'></input>
+                    <input id='address2' type='text' size='20'></input>
                     <br></br>
                     City:
                     <input id='city' type='text' required size='20'></input>
@@ -140,14 +150,40 @@ class App extends React.Component {
                     <input id='phone' type='text' required size='20'></input>
                     <br></br>
                     <input id='newsubmit' type='submit' value='Store Address' onClick={this.next.bind(this)}></input>
-
                 </form>
             </div>
         )
     }
     renderBilling() {
         return (
-            <div>Billing</div>
+            <div>Please enter your payment information in our extremely secure system:
+                <form>
+                    Name on the Card:
+                    <input id='billname' type='text' required size='16'></input>
+                    <br></br>
+                    Card Number:
+                    <input id='cardnumber' type='text' required size='20'></input>
+                    <br></br>
+                    Enter Expiration (MM/YY)
+                    <input id='expMonth' type='text' required size='2'></input>
+                    <input id='expYear' type='text' required size='2'></input>
+                    <br></br>
+                    Enter CVV
+                    <input id='CVV' type='text' required size='3'></input>
+                    <br></br>
+                    Billing Zip
+                    <input id='zip' type='text' required size='20'></input>
+                    <br></br>
+                    <input id='newsubmit' type='submit' value='Store Billing' onClick={this.next.bind(this)}></input>
+                </form>
+            </div>
+        )
+    }
+    renderConfirmation (){
+        return (
+            <div>Confirm your details:
+                <div>${JSON.stringify(this.state.cart)}</div>
+            </div>
         )
     }
     renderComplete() {
@@ -171,6 +207,8 @@ class App extends React.Component {
             case 3:
                 return this.renderBilling();
             case 4:
+                return this.renderConfirmation();
+            case 5:
                 return this.renderComplete();
             default:
                 return (
