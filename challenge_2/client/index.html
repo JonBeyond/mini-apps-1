@@ -3,16 +3,26 @@
     <title>hello</title>
 </head>
 <body>
-    <p>the quick brown fox jumped over the lazy dog</p>
-    <form>
+    <p>Basic JSON obj -> CSV Converter</p>
+    <p>Good starter text is:</p>
+    <p>{"firstName":"Joshie","lastName":"Wyattson","county":"San Mateo","city":"San Mateo","role":"Broker","sales":1000000,"children":[{"firstName":"Beth Jr.","lastName":"Johnson","county":"San Mateo","city":"Pacifica","role":"Manager","sales":2900000,"children":[{"firstName":"Smitty","lastName":"Won","county":"San Mateo","city":"Redwood City","role":"Sales Person","sales":4800000,"children":[]},{"firstName":"Allen","lastName":"Price","county":"San Mateo","city":"Burlingame","role":"Sales Person","sales":2500000,"children":[]}]},{"firstName":"Beth","lastName":"Johnson","county":"San Francisco","city":"San Francisco","role":"Broker/Sales Person","sales":7500000,"children":[]}]}</p>
+    <br><br>
+    <form method="POST" action="/submit">
         Enter JSON text:
         <input id='inputfile' type='text'>
         <button id='submit'>submit</button>
     </form>
+    <br> Alternatively, you can upload a JSON file
+    <br>
+    <form >
+        <input type='file' id='userFile'>
+        <button id='fileUpload'>Click to Load</button>
+    </form>
+    <br><br>
     <div id="response">
-        Your input file was:
+        <b>Your input file was:</b>
         <div id="preprocess"></div>
-        Your output file is:
+        <b>Your output file is:</b>
         <div id="postprocess"></div>
     </div>
 

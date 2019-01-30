@@ -22,7 +22,7 @@ var state = {
         GET.open('GET', 'http://127.0.0.1:3000/getfile', true)
         GET.onreadystatechange = () => {
             if (GET.readyState === 4 && GET.status === 200) {
-                state.postprocess = GET.responseText;
+                state.postprocess = GET.responseText.substring(1,GET.responseText.length-5);
                 console.log("received: " + state.postprocess);
                 viewer.render();
             }

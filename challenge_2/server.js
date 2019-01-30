@@ -60,6 +60,9 @@ var process = {
     foundObjs: [],
     CSVString: '',
     CSV: () => {
+        process.CSVString = ''; //reset
+        process.foundObjs =[]; //reset
+        process.foundKeys = []; //reset
         let object = JSON.parse(process.inputFile); //convert BUFFER to string?
 
         //the input object contains key:value pairs and a child property with an array
@@ -106,7 +109,7 @@ var process = {
         process.foundKeys.forEach((key) => {
             process.CSVString += key+",";
         });
-        process.CSVString.substring(0, process.CSVString.length-1); //clumsily remove trailing comma
+        process.CSVString = process.CSVString.substring(0, process.CSVString.length-1); //clumsily remove trailing comma
         process.CSVString+="<br>";  //add html new line.
 
         //***** ENTRY LINES *****/
@@ -118,36 +121,14 @@ var process = {
                     process.CSVString += ',';
                 }
             });
-            process.CSVString.substring(0, process.CSVString.length-1); //trim
+            process.CSVString = process.CSVString.substring(0, process.CSVString.length-1); //trim
             process.CSVString+="<br>"; //new line
         }
 
 
         console.log(`CSV string is: ${process.CSVString}`);
         process.outputFile = process.CSVString;
-        //save it under process.outputFile
     }
 }
-
-
-
-/*************** CSV DETAILS ***************
- *
- * The server must flatten the JSON hierarchy, mapping each item/object in
- * the JSON to a single line of CSV report (see included sample output),
- * where the keys of the JSON objects will be the columns of the CSV report.
-
- * You may assume the JSON data has a regular structure and hierarchy
- * (see included sample file). In other words, all sibling records at a
- * particular level of the hierarchy will have the same set of properties,
- * but child objects might not contain the same properties. In all cases,
- * every property you encounter must be present in the final CSV output.
-
- * You may also assume that child records in the JSON will always be
- * in a property called `children`.
- *
- ******************************************/
-
-
 
 server.initialize();
