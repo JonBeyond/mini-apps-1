@@ -27,6 +27,9 @@ class App extends React.Component {
             case 3:
                 this.processBilling();
                 break;
+            case 4:
+                this.sendData();
+                break;
             default:
                 console.log('ERROR: unable to store form data');
         }
@@ -75,14 +78,29 @@ class App extends React.Component {
         console.log(reference);
     }
 
+/************************* SERVER COMMUNICATION *************************/
+
+    sendData() {
+        //send to node server.
+        var connection = new XMLHttpRequest();
+        connection.onreadystatechange = () => {
+            if (connection.readyState === 4) {
+                console.log('cart sent to server');
+            }
+        };
+        //need to specify parameters
+        connection.open('POST', 'http://127.0.0.1:3000/cart', true);
+        connection.send(JSON.stringify(this.state.cart)); //send the entire cart object
+
+    }
 
 
-/************************* CHECKOUT STAGES - PAGES *************************/
+/************************* CHECKOUT STAGES - FORMS *************************/
     renderHome() {
         return (
             <div>Welcome to the best checkout app in existance!
                 <div>Are you ready to checkout?</div>
-                <button id="startcheckout" onClick={this.next.bind(this)}>YES!! LET'S CHECKOUT</button>
+                <button id='startcheckout' onClick={this.next.bind(this)}>YES!! LET'S CHECKOUT</button>
             </div>
         )
     }
@@ -110,7 +128,7 @@ class App extends React.Component {
                     <br></br>
                 <form>
                     Input username or email:
-                    <input id="loginID" type='text' required size='20'></input>
+                    <input id='loginID' type='text' required size='20'></input>
                     <br></br>
                     Input password:
                     <input id='password' type='text' required size='20'></input>
@@ -183,12 +201,16 @@ class App extends React.Component {
         return (
             <div>Confirm your details:
                 <div>${JSON.stringify(this.state.cart)}</div>
+                <br></br>
+                <button onClick={this.next.bind(this)}>Complete order</button>
             </div>
         )
     }
     renderComplete() {
         return (
-            <div>Thanks for ordering!</div>
+            <div>Thanks for ordering!
+                <p>eventually this page will redirect to start a new order</p>
+            </div>
         )
     }
 
