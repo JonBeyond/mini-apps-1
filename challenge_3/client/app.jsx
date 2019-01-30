@@ -29,6 +29,7 @@ class App extends React.Component {
                 break;
             case 4:
                 this.sendData();
+                return; /********** ALLOW FOR LIMITLESS OBJ SENDING FOR DB TESTING *********/
                 break;
             default:
                 console.log('ERROR: unable to store form data');
