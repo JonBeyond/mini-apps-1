@@ -24,6 +24,7 @@ var state = {
             if (GET.readyState === 4 && GET.status === 200) {
                 state.postprocess = GET.responseText;
                 console.log("received: " + state.postprocess);
+                viewer.render();
             }
         }
         GET.send();
@@ -36,11 +37,16 @@ var viewer = {
         if (state.preprocess) {
             document.getElementById('preprocess').innerHTML = JSON.stringify(state.preprocess);
         }
+        if (state.postprocess) {
+            document.getElementById('postprocess').innerHTML = JSON.stringify(state.postprocess);
+        }
     },
     disableButton: (target) => {
         document.getElementById(target).disabled = true;
     }
 }
+
+
 var controller = {
     initialize: () => {
         document.getElementById('submit').addEventListener('click', (event) => {

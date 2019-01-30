@@ -56,7 +56,80 @@ var server = {
 var process = {
     inputFile: null,
     outputFile: null,
+    foundKeys: [],
+    foundObjs: [],
+    CSVString: '',
     CSV: () => {
+        let object = JSON.parse(process.inputFile); //convert BUFFER to string?
+
+        //the input object contains key:value pairs and a child property with an array
+        //of additional objects that may share the same key s, and may not.
+
+        //first, let's process the parent item and store non-'children' key s found within it to start off
+        let obj = {}; //temp obj holder
+        for (let key in object) {
+            if (key !== 'children') {
+                process.foundKeys.push(key);
+                obj[key] = object[key]; //make a copy of the object for easy csv processing
+            }
+        }
+        process.foundObjs.push(obj);
+
+        //the below is a function that will process all of the children in a similar fasion.
+        var depthTraverser = (children) => { //send the array of children.  go depth first (?)
+            for (let i = 0; i < children.length; i++) {
+                let obj = {}; //create new temp obj
+                for (let key in children[i]) {
+                    if (!process.foundKeys.includes(key) && key !== 'children') { //look for new keys
+                        process.foundKeys.push(key);
+                    }
+                    if (key !== 'children') {
+                        obj[key] = children[i][key];  //store for later
+                    }
+                }
+                console.log(`storing new obj: ${JSON.stringify(obj)}`)
+                process.foundObjs.push(obj); //see ya!
+                if (children[i].children.length > 0) {
+                    depthTraverser(children[i].children); //send child array
+                }
+            }
+        }
+
+        if (object.children.length > 0) {
+            depthTraverser(object.children); //send the child array
+        }
+
+
+
+
+        //***** HEADER *****/
+        process.foundKeys.forEach((key) => {
+            process.CSVString += key+",";
+        });
+        process.CSVString.substring(0, process.CSVString.length-1); //clumsily remove trailing comma
+        process.CSVString+="<br>";  //add html new line.
+
+        //***** ENTRY LINES *****/
+        for (let i = 0; i < process.foundObjs.length; i++) {
+            process.foundKeys.forEach((key) => {
+                if(process.foundObjs[i].hasOwnProperty(key)) {
+                    process.CSVString += process.foundObjs[i][key]+',';
+                } else {
+                    process.CSVString += ',';
+                }
+            });
+            process.CSVString.substring(0, process.CSVString.length-1); //trim
+            process.CSVString+="<br>"; //new line
+        }
+
+
+        console.log(`CSV string is: ${process.CSVString}`);
+        process.outputFile = process.CSVString;
+        //save it under process.outputFile
+    }
+}
+
+
 
 /*************** CSV DETAILS ***************
  *
@@ -75,72 +148,6 @@ var process = {
  *
  ******************************************/
 
-        let object = JSON.parse(process.inputFile); //convert BUFFER to string?
 
-        //var buf = Buffer.from(JSON.stringify(obj))
-        //now need to process the string.
-        console.log('converting the following object to .csv:');
-        console.log(object);
-        let csvString = '';
-        let keys = [];
-        let objs = []; //store all objs.
-
-        let obj = {};//temp obj
-
-        for (let key in object) {
-            if (key !== 'children') {
-                keys.push(key);
-                obj.key = object[key];
-            }
-        }
-        objs.push(obj); //store first line
-
-        var depthTraverser = (children) => { //send the array of children.  go depth first (?)
-            for (let i = 0; i < children.length; i++) {
-                obj = {}; //create new temp obj
-                for (let key in children[i]) {
-                    if (!keys.includes(key) && key !== 'children') { //look for new keys
-                        keys.push(key);
-                    }
-                    obj.key = object[key];  //store for later
-                }
-                objs.push(obj); //see ya!
-                if (children[i].children.length > 0) {
-                    depthTraverser(children[i].children); //send child array
-                }
-            }
-        }
-
-        if (object.children.length > 0) {
-            depthTraverser(object.children); //send the child array
-        }
-
-        //***** HEADER *****/
-        keys.forEach((key) => {
-            csvString += key+",";
-        });
-        csvString.substring(0, csvString.length-1); //clumsily remove trailing comma
-        csvString+="<br>";  //add html new line.
-
-        //***** ENTRY LINES *****/
-        for (let i = 0; i < objs.length; i++) {
-            keys.forEach((key) => {
-                if(objs[i].hasOwnProperty(key)) {
-                    csvString += objs[i][key]+',';
-                } else {
-                    csvString += ',';
-                }
-            });
-            csvString.substring(0, csvString.length-1); //trim
-            csvString+="<br>"; //new line
-        }
-
-        console.log(csvString);
-
-        console.log(`CSV string is: ${csvString}`);
-        process.outputFile = csvString;
-        //save it under process.outputFile
-    }
-}
 
 server.initialize();
