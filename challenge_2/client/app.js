@@ -1,3 +1,5 @@
+/************************* STATE *************************/
+
 var state = {
     preprocess: null,
     postprocess: null,
@@ -15,7 +17,6 @@ var state = {
             }
         }
         POST.send(JSON.stringify(state.preprocess));
-
     },
     getFile: () => {
         let GET = new XMLHttpRequest();
@@ -23,7 +24,6 @@ var state = {
         GET.onreadystatechange = () => {
             if (GET.readyState === 4 && GET.status === 200) {
                 state.postprocess = GET.responseText.substring(1,GET.responseText.length-5);
-                console.log("received: " + state.postprocess);
                 viewer.render();
             }
         }
@@ -31,12 +31,10 @@ var state = {
     }
 }
 
+/************************* VIEWER *************************/
 
 var viewer = {
     render: () => {
-        if (state.preprocess) {
-            document.getElementById('preprocess').innerHTML = JSON.stringify(state.preprocess);
-        }
         if (state.postprocess) {
             document.getElementById('postprocess').innerHTML = JSON.stringify(state.postprocess);
         }
@@ -46,19 +44,18 @@ var viewer = {
     }
 }
 
+/************************* CONTROLLER *************************/
 
 var controller = {
     initialize: () => {
         document.getElementById('submit').addEventListener('click', (event) => {
             event.preventDefault();
-            viewer.disableButton(event.target.id);
             state.readFile();
-            state.sendFile(); //async
+            state.sendFile();
         });
         document.getElementById('fileUpload').addEventListener('click', (event) => {
             let reader = new FileReader();
             event.preventDefault();
-            viewer.disableButton(event.target.id);
             let file = document.getElementById('userFile').files[0];
             reader.onloadend = (event) => {
                 state.preprocess = JSON.parse(reader.result);
@@ -70,8 +67,6 @@ var controller = {
     }
 }
 
-
-
 console.log('app integrated properly');
-console.log('initializing application');
+console.log('initializing client application');
 controller.initialize();
