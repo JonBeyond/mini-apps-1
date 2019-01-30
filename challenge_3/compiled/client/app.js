@@ -1,0 +1,6 @@
+ReactDOM.render(React.createElement(
+    'h1',
+    null,
+    'Hello, from react!!'
+), document.getElementById('app'));
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL2NsaWVudC9hcHAuanN4Il0sIm5hbWVzIjpbIlJlYWN0RE9NIiwicmVuZGVyIiwiZG9jdW1lbnQiLCJnZXRFbGVtZW50QnlJZCJdLCJtYXBwaW5ncyI6IkFBQUFBLFNBQVNDLE1BQVQsQ0FDSTtBQUFBO0FBQUE7QUFBQTtBQUFBLENBREosRUFFSUMsU0FBU0MsY0FBVCxDQUF3QixLQUF4QixDQUZKIiwiZmlsZSI6ImFwcC5qcyIsInNvdXJjZXNDb250ZW50IjpbIlJlYWN0RE9NLnJlbmRlcihcbiAgICA8aDE+SGVsbG8sIGZyb20gcmVhY3QhITwvaDE+LFxuICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdhcHAnKVxuICApOyJdfQ==

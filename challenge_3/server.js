@@ -17,7 +17,7 @@ var server = {
 
 var router = {
     serveClient: () => {
-        console.log('client serving not available yet');
+        app.get('/', (req, res) => res.send('client serving not available yet'));
         //two lines, one for serving static assets, one serving the HTML file
     }
 }
