@@ -75,18 +75,70 @@ var process = {
  *
  ******************************************/
 
-        let object = JSON.parse(process.inputFile.toString()); //convert BUFFER to string?
+        let object = JSON.parse(process.inputFile); //convert BUFFER to string?
+
+        //var buf = Buffer.from(JSON.stringify(obj))
         //now need to process the string.
         console.log('converting the following object to .csv:');
         console.log(object);
+        let csvString = '';
+        let keys = [];
+        let objs = []; //store all objs.
 
-        let csvstring = '';
-        /*
-         *
-         *
-         *
-         */
+        let obj = {};//temp obj
 
+        for (let key in object) {
+            if (key !== 'children') {
+                keys.push(key);
+                obj.key = object[key];
+            }
+        }
+        objs.push(obj); //store first line
+
+        var depthTraverser = (children) => { //send the array of children.  go depth first (?)
+            for (let i = 0; i < children.length; i++) {
+                obj = {}; //create new temp obj
+                for (let key in children[i]) {
+                    if (!keys.includes(key) && key !== 'children') { //look for new keys
+                        keys.push(key);
+                    }
+                    obj.key = object[key];  //store for later
+                }
+                objs.push(obj); //see ya!
+                if (children[i].children.length > 0) {
+                    depthTraverser(children[i].children); //send child array
+                }
+            }
+        }
+
+        if (object.children.length > 0) {
+            depthTraverser(object.children); //send the child array
+        }
+
+        //***** HEADER *****/
+        keys.forEach((key) => {
+            csvString += key+",";
+        });
+        csvString.substring(0, csvString.length-1); //clumsily remove trailing comma
+        csvString+="<br>";  //add html new line.
+
+        //***** ENTRY LINES *****/
+        for (let i = 0; i < objs.length; i++) {
+            keys.forEach((key) => {
+                if(objs[i].hasOwnProperty(key)) {
+                    csvString += objs[i][key]+',';
+                } else {
+                    csvString += ',';
+                }
+            });
+            csvString.substring(0, csvString.length-1); //trim
+            csvString+="<br>"; //new line
+        }
+
+        console.log(csvString);
+
+        console.log(`CSV string is: ${csvString}`);
+        process.outputFile = csvString;
         //save it under process.outputFile
     }
 }

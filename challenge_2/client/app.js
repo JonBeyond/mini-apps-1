@@ -2,7 +2,7 @@ var state = {
     preprocess: null,
     postprocess: null,
     readFile: () => {
-        state.preprocess = document.getElementById('inputfile').value;
+        state.preprocess = JSON.parse(document.getElementById('inputfile').value);
         viewer.render();
     },
     sendFile: () => {
@@ -34,7 +34,7 @@ var state = {
 var viewer = {
     render: () => {
         if (state.preprocess) {
-            document.getElementById('preprocess').innerHTML = state.preprocess;
+            document.getElementById('preprocess').innerHTML = JSON.stringify(state.preprocess);
         }
     },
     disableButton: (target) => {
