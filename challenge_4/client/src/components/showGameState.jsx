@@ -1,5 +1,7 @@
-function showGameState(props) {
-    return 'hellos';
+function ShowGameState(props) {
+    return (
+        <div>current player is TBD</div>
+    )
 }
 
-export default showGameState;
+export default ShowGameState;

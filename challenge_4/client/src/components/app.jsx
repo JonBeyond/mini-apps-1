@@ -1,6 +1,5 @@
-import createRows from './app.jsx';
-import createRow from './app.jsx';
-import showGameState from './showGameState.jsx';
+import CreateBoard from './CreateBoard.jsx';
+import ShowGameState from './showGameState.jsx';
 
 
 class App extends React.Component {
@@ -27,11 +26,18 @@ class App extends React.Component {
 
     render() {
         return (
-            <div>Welcome to Mini-connect 4!
-                <br></br>
-                <gameState />
-                <br></br>
-                <createRows />
+            <div>
+                <div className="title">Welcome to Mini-Connect 4!</div>
+                <div className="game" >
+                    <br></br>
+                    <div><ShowGameState /></div>
+                    <br></br>
+                </div>
+                <div className='board'>
+                    <br></br>
+                    <div><CreateBoard board={this.state.board}/></div>
+                    <br></br>
+                </div>
             </div>
         )
     }
