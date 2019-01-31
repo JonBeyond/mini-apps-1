@@ -5,7 +5,7 @@ function CreateBoard(props) {
         <div className='boardgrid'>
             {props.board.map((row, rowIndex) => {
                 return row.map((cell, colIndex) => {
-                    return <GenerateCell x={colIndex} y={rowIndex} />
+                    return <GenerateCell click={props.click} x={colIndex} y={rowIndex} val={cell}/>
                 })
             })}
         </div>
