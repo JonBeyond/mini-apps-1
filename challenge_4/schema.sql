@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS `results`;
+
+CREATE TABLE `results` (
+  `id` INTEGER AUTO_INCREMENT DEFAULT,
+  `winner` CHAR(1) DEFAULT,
+  `timestamp` BIGINT DEFAULT,
+  PRIMARY KEY (`id`)
+);

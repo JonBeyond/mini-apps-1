@@ -1,7 +1,6 @@
 import CreateBoard from './CreateBoard.jsx';
 import ShowGameState from './showGameState.jsx';
 
-
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -19,8 +18,7 @@ class App extends React.Component {
             winner: null,
             score: {
                 x: 0,
-                o: 0,
-                ties: 0
+                o: 0
             }
         }
         this.placePiece = this.placePiece.bind(this);
@@ -32,9 +30,11 @@ class App extends React.Component {
         if (this.state.winner === 'X') {
             this.state.score.x++;
             nextPlayer = -1;
+            this.storeResult('X');
         } else if (this.state.winner === 'O') {
             this.state.score.o++;
             nextPlayer = 1;
+            this.storeResult('O');
         } else {
             console.log("Game was not complete when reset.  Starting new game.")
         }
@@ -53,6 +53,19 @@ class App extends React.Component {
             currentPlayer: nextPlayer
         })
     }
+/******************** SERVER COMMUNICATION ********************/
+    storeResult(winner) {
+        let url = 'http://127.0.0.1:3000/result';
+        let connection = new XMLHttpRequest();
+        connection.open('POST', url), true;
+        connection.setRequestHeader('content-type','application/JSON');
+        connection.onreadystatechange = () => {
+            if (connection.readyState === 4) {
+                console.log("Game sent to server");
+            }
+        }
+        connection.send(JSON.stringify(winner));
+    }
 
 /******************** STATE ********************/
     placePiece(event) {
@@ -64,7 +77,7 @@ class App extends React.Component {
 
         //determine if this is a valid mode
         if (!this.validatePlay(col)) {
-            console.log('sorry - that column is full. Try another column')
+            console.log('sorry - that column is full. Try another column');
             return;
         }
         //place piece at the lowest non-zero row/col
@@ -167,9 +180,7 @@ class App extends React.Component {
             row++;
             col++;
         }
-        //now lets check every 4 elements of major
-        //major.length = 5; need to start 2
-        //[0, 1, 1, 1, 1] length = 4;
+
         let majorSum = [];
         for (let i = 0; i < major.length-3; i++) {
             majorSum.push(major[i]+major[i+1]+major[i+2]+major[i+3]);
@@ -207,10 +218,8 @@ class App extends React.Component {
             minor.push(b[row][col]);
             row--;
             col++;
-        } //note if at the end here, row/col will be outside range. /shrug
-        //now lets check every 4 elements of major
-        //major.length = 5; need to start 2
-        //[0, 1, 1, 1, 1] length = 4;
+        }
+
         let minorSum = [];
         for (let i = 0; i < minor.length-3; i++) {
             minorSum.push(minor[i]+minor[i+1]+minor[i+2]+minor[i+3]);
@@ -247,7 +256,7 @@ class App extends React.Component {
 
     generateScoreText() {
         let tracker = this.state.score;
-        return `Current score (X-O-Ties) : ${tracker.x}-${tracker.o}-${tracker.ties}`
+        return `Current score (X-O) : ${tracker.x}-${tracker.o}`
     }
 
     render() {
@@ -273,8 +282,7 @@ class App extends React.Component {
                 </div>
                 <br></br>
                 <br></br>
-                <br></br>
-                <div>Want to bail out early?<br></br>
+                <div>Want to start a new game? If the game is completed, the result will be sent to the server.<br></br>
                 <button onClick={this.reset.bind(this)}>Start new game</button></div>
             </div>
         )
