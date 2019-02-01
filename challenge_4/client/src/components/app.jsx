@@ -19,7 +19,8 @@ class App extends React.Component {
             score: {
                 x: 0,
                 o: 0
-            }
+            },
+            dbresults: []
         }
         this.placePiece = this.placePiece.bind(this);
     }
@@ -50,8 +51,10 @@ class App extends React.Component {
                    ],
             complete: false,
             winner: null,
-            currentPlayer: nextPlayer
+            currentPlayer: nextPlayer,
+            db: null
         })
+        this.getResults();
     }
 /******************** SERVER COMMUNICATION ********************/
     storeResult(winner) {
@@ -65,6 +68,21 @@ class App extends React.Component {
             }
         }
         connection.send(JSON.stringify(winner));
+    }
+
+    getResults() {
+        console.log('sending get request for results');
+        let url = 'http://127.0.0.1:3000/result';
+        let connection = new XMLHttpRequest();
+        connection.onreadystatechange = () => {
+            if (connection.readyState === XMLHttpRequest.DONE) {
+                this.setState({
+                    db: JSON.parse(connection.responseText)
+                });
+            }
+        }
+        connection.open('GET', url), true;
+        connection.send();
     }
 
 /******************** STATE ********************/
@@ -259,9 +277,25 @@ class App extends React.Component {
         return `Current score (X-O) : ${tracker.x}-${tracker.o}`
     }
 
+    generateResultText() {
+        console.log(this.state.db);
+        if (this.state.db === null || this.state.db === undefined) return [''];
+
+        let max = 30;
+        let str = [];
+        if (this.state.db.length < 30) {
+            max = this.state.db.length;
+        }
+        for (let i = 0; i < max; i++) {
+            str.push(`Id: ${this.state.db[i]['id']}, Winner: ${this.state.db[i]['result']}, Timestamp: ${this.state.db[i]['timestamp']}`);
+        }
+        return str;
+    }
+
     render() {
         let statusText = this.generateStatusText();
         let scoreText = this.generateScoreText();
+        let dbResults = this.generateResultText();
         return (
             <div>
                 <div className="title">Welcome to Mini-Connect 4!</div>
@@ -284,6 +318,13 @@ class App extends React.Component {
                 <br></br>
                 <div>Want to start a new game? If the game is completed, the result will be sent to the server.<br></br>
                 <button onClick={this.reset.bind(this)}>Start new game</button></div>
+                <br></br>
+                <br></br>
+                {dbResults.map(result => {
+                    return (
+                        <div>{result}</div>
+                    )
+                })}
             </div>
         )
     }

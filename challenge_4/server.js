@@ -3,6 +3,13 @@ const path = require('path');
 var mysql = require('mysql');
 var app = express();
 
+var db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '', //temporary PW - do not commit
+    database: 'connectfour'
+})
+
 
 var server = {
     port: 3000,
@@ -10,6 +17,7 @@ var server = {
         //start server here, and call router functions to begin listening
         router.serveClient();
         router.receiveResult();
+        router.sendResults();
         app.listen(server.port, (err) => {
             console.log(`Listening on ${server.port}`);
         })
@@ -32,49 +40,32 @@ var router ={ //this will route requests
                     winner: JSON.parse(data),
                     timestamp: Date.now()
                 }
-                let db = mysql.createConnection({
-                    host: 'localhost',
-                    user: 'root',
-                    password: '', //temporary PW - do not commit
-                    database: 'connectfour'
-                })
-                db.connect();
 
                 db.query(`INSERT INTO results (result, timestamp) VALUES ('${result.winner}',${result.timestamp});`, (err, results, fields) => {
                     if(err) throw err;
                     console.log('result added to database');
                 })
-                db.end();
             })
             //at this point, should send the game to the database
             res.setStatus = 201;
             res.end();
         })
+    },
+    sendResults: () => {
+        app.get('/result', (req, res) => {
+            console.log('request for db results received');
+
+            db.query('SELECT * FROM results', (err, results) => {
+                if(err) throw err;
+                res.setHeader('content-type','application/JSON');
+                res.statusCode = 200;
+                res.send(results);
+                res.end();
+            })
+
+        })
+
     }
 }
 
 server.initialize();
-
-
-/*
-
-
-var mysql      = require('mysql');
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'me',
-  password : 'secret',
-  database : 'my_db'
-});
- 
-connection.connect();
- 
-connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
-  if (error) throw error;
-  console.log('The solution is: ', results[0].solution);
-});
- 
-connection.end();
-
-
-*/
