@@ -16,9 +16,42 @@ class App extends React.Component {
                     ],
             currentPlayer: 1,
             complete: false,
-            winner: null
+            winner: null,
+            score: {
+                x: 0,
+                o: 0,
+                ties: 0
+            }
         }
         this.placePiece = this.placePiece.bind(this);
+    }
+
+/******************** RESET ********************/
+    reset() {
+        let nextPlayer = null;
+        if (this.state.winner === 'X') {
+            this.state.score.x++;
+            nextPlayer = -1;
+        } else if (this.state.winner === 'O') {
+            this.state.score.o++;
+            nextPlayer = 1;
+        } else {
+            console.log("Game was not complete when reset.  Starting new game.")
+        }
+
+        this.setState({
+            board: [
+                    [0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0]
+                   ],
+            complete: false,
+            winner: null,
+            currentPlayer: nextPlayer
+        })
     }
 
 /******************** STATE ********************/
@@ -30,7 +63,6 @@ class App extends React.Component {
         let col = location[2];
 
         //determine if this is a valid mode
-        console.log(`Checking play at ${location}`); //TODO: remove debugging
         if (!this.validatePlay(col)) {
             console.log('sorry - that column is full. Try another column')
             return;
@@ -50,7 +82,6 @@ class App extends React.Component {
                     board: b,
                     currentPlayer: nextPlayer
                 });
-                console.log(`piece was placed at row: ${row}, col: ${col}`);
                 this.checkBoard(row,col);
                 return;
             }
@@ -202,22 +233,33 @@ class App extends React.Component {
         return false;
     }
 
-    generateStatusText() {
 
+/******************** VIEWER ********************/
+
+
+    generateStatusText() {
         if (this.state.complete) {
             return `Winner is ${this.state.winner}! Congratulations!`;
         } else if (this.state.currentPlayer === 1) {
             return 'Current player is X';
         } else return 'Current player is O';
     }
-/******************** VIEWER ********************/
+
+    generateScoreText() {
+        let tracker = this.state.score;
+        return `Current score (X-O-Ties) : ${tracker.x}-${tracker.o}-${tracker.ties}`
+    }
 
     render() {
         let statusText = this.generateStatusText();
+        let scoreText = this.generateScoreText();
         return (
             <div>
                 <div className="title">Welcome to Mini-Connect 4!</div>
                 <div className="game" >
+                    <br></br>
+                    <div>{scoreText}</div>
+                    <br></br>
                     <br></br>
                     <div>{statusText}</div>
                     <br></br>
@@ -229,6 +271,11 @@ class App extends React.Component {
                     <div><CreateBoard board={this.state.board} click={this.placePiece}/></div>
                     <br></br>
                 </div>
+                <br></br>
+                <br></br>
+                <br></br>
+                <div>Want to bail out early?<br></br>
+                <button onClick={this.reset.bind(this)}>Start new game</button></div>
             </div>
         )
     }
